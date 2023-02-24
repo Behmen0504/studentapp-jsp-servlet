@@ -1,6 +1,7 @@
 package com.example.studentappcustoms.dao.repository;
 
-import com.example.studentappcustoms.DatabaseConnention;
+import com.example.studentappcustoms.Helper.DatabaseConnention;
+import com.example.studentappcustoms.dao.entity.DepartmentEntity;
 import com.example.studentappcustoms.dao.entity.EmployeeEntity;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 import com.example.studentappcustoms.model.dto.EmployeeDto;
@@ -8,28 +9,31 @@ import com.example.studentappcustoms.model.dto.EmployeeDto;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class EmployeeDao {
+public class EmployeeDaoRepository {
     public ArrayList<EmployeeDto> getAllEmployees(Connection c) throws Exception {
         PreparedStatement statement = c.prepareStatement("select * from employees");
         ResultSet rs = statement.executeQuery();
+
         ArrayList<EmployeeDto> arr = new ArrayList<>();
 
-        DepartmentDao departmentDao = new DepartmentDao();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
+
         while (rs.next()) {
-            DepartmentDto departmentDto = departmentDao.getDepartmentById(
+            DepartmentDto departmentDto = departmentRepository.getDepartmentById(
                     rs.getObject(5) != null && !rs.wasNull() ? (Integer) rs.getObject(5) : null);
+
+            DepartmentEntity departmentEntity = new DepartmentEntity(departmentDto.getId(),departmentDto.getName());
             EmployeeEntity entity = new EmployeeEntity(
                     rs.getInt(1), rs.getString(2), rs.getString(3),
                     rs.getString(4),
-                    departmentDto);
+                    departmentEntity);
 
             EmployeeDto employeeDto = new EmployeeDto(
                     entity.getId(),
                     entity.getName(),
                     entity.getSurname(),
                     entity.getDob(),
-                    entity.getDto());
-
+                    departmentDto);
             arr.add(employeeDto);
         }
 
@@ -40,7 +44,7 @@ public class EmployeeDao {
         EmployeeEntity entity = null;
         EmployeeDto employeeDto = null;
         Connection c = null;
-        DepartmentDao departmentDao = new DepartmentDao();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
 
         c = DatabaseConnention.connectToDatabase();
         PreparedStatement statement = c.prepareStatement("select * from employees where id = " + id);
@@ -48,20 +52,20 @@ public class EmployeeDao {
 
 
         while (rs.next()) {
-            DepartmentDto departmentDto = departmentDao.getDepartmentById(
+            DepartmentDto departmentDto = departmentRepository.getDepartmentById(
                     rs.getObject(5) != null && !rs.wasNull() ? (Integer) rs.getObject(5) : null);
             entity = new EmployeeEntity(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
                     rs.getString(4),
-                    departmentDto);
+                    new DepartmentEntity(departmentDto.getId(),departmentDto.getName()));
             employeeDto = new EmployeeDto(
                     entity.getId(),
                     entity.getName(),
                     entity.getSurname(),
                     entity.getDob(),
-                    entity.getDto());
+                    departmentDto);
         }
 
         return employeeDto;
@@ -76,7 +80,7 @@ public class EmployeeDao {
         statement.setString(1, entity.getName());
         statement.setString(2, entity.getSurname());
         statement.setString(3, entity.getDob());
-        statement.setInt(4, entity.getDto().getId());
+        statement.setInt(4, entity.getEntity().getId());
         statement.executeUpdate();
         rs = statement.getGeneratedKeys();
         if (rs.next()) {
@@ -94,7 +98,7 @@ public class EmployeeDao {
         statement.setString(1, entity.getName());
         statement.setString(2, entity.getSurname());
         statement.setString(3, entity.getDob());
-        statement.setInt(4, entity.getDto().getId());
+        statement.setInt(4, entity.getEntity().getId());
         statement.setInt(5, entity.getId());
         statement.execute();
         rs = statement.getGeneratedKeys();
