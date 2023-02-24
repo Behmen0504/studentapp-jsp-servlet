@@ -1,10 +1,11 @@
 package com.example.studentappcustoms.controller;
 
-import com.example.studentappcustoms.DatabaseConnention;
-import com.example.studentappcustoms.Util;
+import com.example.studentappcustoms.Helper.DatabaseConnention;
+import com.example.studentappcustoms.Helper.Util;
+import com.example.studentappcustoms.dao.entity.DepartmentEntity;
 import com.example.studentappcustoms.dao.entity.EmployeeEntity;
-import com.example.studentappcustoms.dao.repository.DepartmentDao;
-import com.example.studentappcustoms.dao.repository.EmployeeDao;
+import com.example.studentappcustoms.dao.repository.DepartmentRepository;
+import com.example.studentappcustoms.dao.repository.EmployeeRepository;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 import com.example.studentappcustoms.model.dto.EmployeeDto;
 import jakarta.servlet.ServletException;
@@ -15,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 @WebServlet(name = "EmployeeServlet", urlPatterns = "/employee")
@@ -23,8 +23,8 @@ public class EmployeeServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
-        EmployeeDao employeeDao = new EmployeeDao();
-        DepartmentDao departmentDao = new DepartmentDao();
+        EmployeeRepository employeeRepository = new EmployeeRepository();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
         ArrayList<DepartmentDto> department_list = null;
         ArrayList<EmployeeDto> employee_list = null;
         EmployeeDto e = null;
@@ -34,7 +34,7 @@ public class EmployeeServlet extends HttpServlet {
             if (request.getParameter("buttonadd").equals("Add employee")) {
                 try {
                     c = DatabaseConnention.connectToDatabase();
-                    department_list = departmentDao.getAllDepartments(c);
+                    department_list = departmentRepository.getAllDepartments(c);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
@@ -47,8 +47,8 @@ public class EmployeeServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("edit"));
             try {
                 c = DatabaseConnention.connectToDatabase();
-                department_list = departmentDao.getAllDepartments(c);
-                e = employeeDao.getElmployeeById(id);
+                department_list = departmentRepository.getAllDepartments(c);
+                e = employeeRepository.getElmployeeById(id);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
@@ -58,7 +58,7 @@ public class EmployeeServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("delete"));
             try {
                 c = DatabaseConnention.connectToDatabase();
-                employeeDao.deleteEmployee(id);
+                employeeRepository.deleteEmployee(id);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
@@ -68,8 +68,11 @@ public class EmployeeServlet extends HttpServlet {
 
 
         try {
+
             c = DatabaseConnention.connectToDatabase();
-            employee_list = employeeDao.getAllEmployees(c);
+            employee_list = employeeRepository.getAllEmployees(c);
+            System.out.println(employee_list);
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -79,16 +82,16 @@ public class EmployeeServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html");
-        EmployeeDao employeeDao = new EmployeeDao();
-        DepartmentDao departmentDao = new DepartmentDao();
+        EmployeeRepository employeeRepository = new EmployeeRepository();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
         ArrayList<DepartmentDto> department_list = null;
         ArrayList<EmployeeDto> employee_list = null;
         DepartmentDto department = null;
         EmployeeDto e = null;
         Connection c = null;
 
-        departmentDao = new DepartmentDao();
-        employeeDao = new EmployeeDao();
+        departmentRepository = new DepartmentRepository();
+        employeeRepository = new EmployeeRepository();
         c = null;
         String id = request.getParameter("id");
         String name = request.getParameter("name");
@@ -96,12 +99,14 @@ public class EmployeeServlet extends HttpServlet {
         String dt = request.getParameter("dob");
         String dep_id = request.getParameter("depid");
         try{
-            department = departmentDao.getDepartmentById(Integer.parseInt(dep_id));
+            department = departmentRepository.getDepartmentById(Integer.parseInt(dep_id));
             if (request.getParameter("btnedit") != null) {
-                EmployeeEntity entity = new EmployeeEntity(Integer.parseInt(id), name, surname, dt, department);
+                EmployeeEntity entity = new EmployeeEntity(
+                        Integer.parseInt(id), name, surname, dt,
+                        new DepartmentEntity(department.getId(),department.getName()));
                 if (request.getParameter("btnedit").equals("Edit employee")) {
                     try {
-                        employeeDao.updateEmployee(entity);
+                        employeeRepository.updateEmployee(entity);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
@@ -114,9 +119,9 @@ public class EmployeeServlet extends HttpServlet {
         }
 
 
-        EmployeeEntity entity = new EmployeeEntity(name, surname, dt, department);
+        EmployeeEntity entity = new EmployeeEntity(name, surname, dt, new DepartmentEntity(department.getId(),department.getName()));
         try {
-            employeeDao.addEmployee(entity);
+            employeeRepository.addEmployee(entity);
             response.sendRedirect("employee?buttonadd=Add+employee");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

@@ -9,7 +9,7 @@ import com.example.studentappcustoms.model.dto.EmployeeDto;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class EmployeeDaoRepository {
+public class EmployeeRepository {
     public ArrayList<EmployeeDto> getAllEmployees(Connection c) throws Exception {
         PreparedStatement statement = c.prepareStatement("select * from employees");
         ResultSet rs = statement.executeQuery();
@@ -19,12 +19,19 @@ public class EmployeeDaoRepository {
         DepartmentRepository departmentRepository = new DepartmentRepository();
 
         while (rs.next()) {
-            DepartmentDto departmentDto = departmentRepository.getDepartmentById(
-                    rs.getObject(5) != null && !rs.wasNull() ? (Integer) rs.getObject(5) : null);
 
-            DepartmentEntity departmentEntity = new DepartmentEntity(departmentDto.getId(),departmentDto.getName());
+            DepartmentDto departmentDto =
+                    rs.getObject(5) != null ?
+                            departmentRepository.getDepartmentById((Integer) rs.getObject(5)
+                            ) : new DepartmentDto();
+
+
+            DepartmentEntity departmentEntity = new DepartmentEntity(departmentDto.getId(), departmentDto.getName());
+
             EmployeeEntity entity = new EmployeeEntity(
-                    rs.getInt(1), rs.getString(2), rs.getString(3),
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
                     rs.getString(4),
                     departmentEntity);
 
@@ -35,7 +42,9 @@ public class EmployeeDaoRepository {
                     entity.getDob(),
                     departmentDto);
             arr.add(employeeDto);
+
         }
+
 
         return arr;
     }
@@ -59,7 +68,7 @@ public class EmployeeDaoRepository {
                     rs.getString(2),
                     rs.getString(3),
                     rs.getString(4),
-                    new DepartmentEntity(departmentDto.getId(),departmentDto.getName()));
+                    new DepartmentEntity(departmentDto.getId(), departmentDto.getName()));
             employeeDto = new EmployeeDto(
                     entity.getId(),
                     entity.getName(),

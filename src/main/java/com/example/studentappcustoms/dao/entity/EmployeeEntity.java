@@ -7,21 +7,21 @@ public class EmployeeEntity {
     private String name;
     private String surname;
     private String dob;
-    private DepartmentDto dto;
+    private DepartmentEntity entity;
 
-    public EmployeeEntity(int id, String name, String surname, String dob, DepartmentDto dto) {
+    public EmployeeEntity(int id, String name, String surname, String dob, DepartmentEntity dto) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
-        this.dto = dto;
+        this.entity = dto;
     }
-    public EmployeeEntity(String name, String surname, String dob, DepartmentDto dto) {
+    public EmployeeEntity(String name, String surname, String dob, DepartmentEntity entity) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
-        this.dto = dto;
+        this.entity = entity;
     }
 
     public int getId() {
@@ -56,12 +56,12 @@ public class EmployeeEntity {
         this.dob = dob;
     }
 
-    public DepartmentDto getDto() {
-        return dto;
+    public DepartmentEntity getEntity() {
+        return entity;
     }
 
-    public void setDto(DepartmentDto dto) {
-        this.dto = dto;
+    public void setDto(DepartmentEntity entity) {
+        this.entity = entity;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class EmployeeEntity {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", dob='" + dob + '\'' +
-                ", dto=" + dto +
+                ", entity=" + entity +
                 '}';
     }
 }

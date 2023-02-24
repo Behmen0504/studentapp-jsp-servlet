@@ -1,3 +1,5 @@
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.example.studentappcustoms.model.dto.EmployeeDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -20,13 +22,16 @@
             <th></th>
         </tr>
         </thead>
+        <%ArrayList<EmployeeDto> list = (ArrayList<EmployeeDto>) request.getAttribute("employeeList");
+            //System.out.println(list);
+        %>
         <c:forEach items="${employeeList}" var="el">
         <tr>
             <td style="display: none;"> ${el.id} </td>
             <td> ${el.name} </td>
             <td> ${el.surname} </td>
             <td> ${el.dob} </td>
-            <td> ${el.department.name} </td>
+            <td> ${el.department != null ? el.department.name : null} </td>
             <td>
                 <a class="btn-crud" href="employee?edit=${el.id}">Edit</a>
             </td>

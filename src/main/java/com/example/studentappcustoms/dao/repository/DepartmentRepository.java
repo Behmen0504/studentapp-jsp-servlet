@@ -1,13 +1,13 @@
 package com.example.studentappcustoms.dao.repository;
 
-import com.example.studentappcustoms.DatabaseConnention;
+import com.example.studentappcustoms.Helper.DatabaseConnention;
 import com.example.studentappcustoms.dao.entity.DepartmentEntity;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DepartmentDao {
+public class DepartmentRepository {
     public ArrayList<DepartmentDto> getAllDepartments(Connection c) throws SQLException {
         PreparedStatement statement = c.prepareStatement("select * from departments");
         ResultSet rs = statement.executeQuery();

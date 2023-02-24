@@ -1,4 +1,4 @@
-package com.example.studentappcustoms;
+package com.example.studentappcustoms.Helper;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

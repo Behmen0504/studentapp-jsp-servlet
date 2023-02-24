@@ -1,6 +1,8 @@
 package com.example.studentappcustoms.model.dto;
 
 
+import com.example.studentappcustoms.dao.entity.DepartmentEntity;
+
 public class EmployeeDto {
     private int id;
     private String name;

@@ -1,11 +1,11 @@
 package com.example.studentappcustoms.controller;
 
 
-import com.example.studentappcustoms.DatabaseConnention;
-import com.example.studentappcustoms.Util;
+import com.example.studentappcustoms.Helper.DatabaseConnention;
+import com.example.studentappcustoms.Helper.Util;
 import com.example.studentappcustoms.dao.entity.DepartmentEntity;
-import com.example.studentappcustoms.dao.repository.DepartmentDao;
-import com.example.studentappcustoms.dao.repository.EmployeeDao;
+import com.example.studentappcustoms.dao.repository.DepartmentRepository;
+import com.example.studentappcustoms.dao.repository.EmployeeRepository;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -23,8 +23,8 @@ import java.util.ArrayList;
 public class DepartmentServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
-        EmployeeDao employeeDao = new EmployeeDao();
-        DepartmentDao departmentDao = new DepartmentDao();
+        EmployeeRepository employeeRepository = new EmployeeRepository();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
         DepartmentDto d = null;
 
         Connection c = null;
@@ -32,7 +32,7 @@ public class DepartmentServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("edit"));
             try {
                 c = DatabaseConnention.connectToDatabase();
-                d = departmentDao.getDepartmentById(id);
+                d = departmentRepository.getDepartmentById(id);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -49,7 +49,7 @@ public class DepartmentServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
             try {
-                departmentDao.deleteDepartment(id);
+                departmentRepository.deleteDepartment(id);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -63,7 +63,7 @@ public class DepartmentServlet extends HttpServlet {
         }
         ArrayList<DepartmentDto> department_list = null;
         try {
-            department_list = departmentDao.getAllDepartments(c);
+            department_list = departmentRepository.getAllDepartments(c);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -72,8 +72,8 @@ public class DepartmentServlet extends HttpServlet {
 
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EmployeeDao employeeDao = new EmployeeDao();
-        DepartmentDao departmentDao = new DepartmentDao();
+        EmployeeRepository employeeRepository = new EmployeeRepository();
+        DepartmentRepository departmentRepository = new DepartmentRepository();
         String id = request.getParameter("id");
         String name = request.getParameter("name");
 
@@ -81,7 +81,7 @@ public class DepartmentServlet extends HttpServlet {
             DepartmentEntity d = new DepartmentEntity(Integer.parseInt(id),name);
             if (request.getParameter("btnedit").equals("Edit department")) {
                 try {
-                    departmentDao.updateDepartment(d);
+                    departmentRepository.updateDepartment(d);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -91,7 +91,7 @@ public class DepartmentServlet extends HttpServlet {
         }
         DepartmentEntity d = new DepartmentEntity(name);
         try {
-            departmentDao.addDepartment(d);
+            departmentRepository.addDepartment(d);
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         } catch (Exception e) {

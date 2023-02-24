@@ -1,17 +1,17 @@
 package com.example.studentappcustoms.dao.entity;
 
 public class DepartmentEntity {
-    private int id;
+    private Integer id;
     private String name;
 
-    public DepartmentEntity(int id,String name) {
+    public DepartmentEntity(Integer id,String name) {
         this.id = id;
         this.name = name;
     }
     public DepartmentEntity(String name) {
         this.name = name;
     }
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
