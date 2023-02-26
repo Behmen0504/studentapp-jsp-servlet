@@ -23,7 +23,6 @@
         </tr>
         </thead>
         <%ArrayList<EmployeeDto> list = (ArrayList<EmployeeDto>) request.getAttribute("employeeList");
-            //System.out.println(list);
         %>
         <c:forEach items="${employeeList}" var="el">
         <tr>

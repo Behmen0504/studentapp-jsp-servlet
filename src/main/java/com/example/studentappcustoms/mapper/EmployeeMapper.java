@@ -15,7 +15,7 @@ public class EmployeeMapper {
                 entity.getDob(),
                 mapEntityToDepartmentDto(entity.getEntity())
         );
-        return null;
+        return employeeDto;
     }
 
 

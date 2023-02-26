@@ -9,12 +9,12 @@ public class EmployeeEntity {
     private String dob;
     private DepartmentEntity entity;
 
-    public EmployeeEntity(int id, String name, String surname, String dob, DepartmentEntity dto) {
+    public EmployeeEntity(int id, String name, String surname, String dob, DepartmentEntity entity) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
-        this.entity = dto;
+        this.entity = entity;
     }
     public EmployeeEntity(String name, String surname, String dob, DepartmentEntity entity) {
         this.id = id;

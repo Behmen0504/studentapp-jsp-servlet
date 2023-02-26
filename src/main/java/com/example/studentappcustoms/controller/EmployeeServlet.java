@@ -66,12 +66,9 @@ public class EmployeeServlet extends HttpServlet {
             return;
         }
 
-
         try {
-
             c = DatabaseConnention.connectToDatabase();
             employee_list = employeeRepository.getAllEmployees(c);
-            System.out.println(employee_list);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());

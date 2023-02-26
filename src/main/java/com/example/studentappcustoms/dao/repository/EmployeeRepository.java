@@ -3,14 +3,35 @@ package com.example.studentappcustoms.dao.repository;
 import com.example.studentappcustoms.Helper.DatabaseConnention;
 import com.example.studentappcustoms.dao.entity.DepartmentEntity;
 import com.example.studentappcustoms.dao.entity.EmployeeEntity;
+import com.example.studentappcustoms.mapper.EmployeeMapper;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 import com.example.studentappcustoms.model.dto.EmployeeDto;
 
 import java.sql.*;
 import java.util.ArrayList;
-
 public class EmployeeRepository {
     public ArrayList<EmployeeDto> getAllEmployees(Connection c) throws Exception {
+        PreparedStatement statement = c.prepareStatement("select * from employees e join departments d on e.dep_id=d.id");
+        ResultSet rs = statement.executeQuery();
+        ArrayList<EmployeeDto> arr = new ArrayList<>();
+        while (rs.next()) {
+
+            DepartmentEntity departmentEntity = new DepartmentEntity(rs.getInt(6),rs.getString(7));
+            EmployeeEntity entity = new EmployeeEntity(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    departmentEntity);
+
+            EmployeeDto employeeDto = EmployeeMapper.mapEntityToDto(entity);
+            arr.add(employeeDto);
+        }
+
+
+        return arr;
+    }
+    public ArrayList<EmployeeDto> getAllEmployees2(Connection c) throws Exception {
         PreparedStatement statement = c.prepareStatement("select * from employees");
         ResultSet rs = statement.executeQuery();
 
@@ -42,9 +63,7 @@ public class EmployeeRepository {
                     entity.getDob(),
                     departmentDto);
             arr.add(employeeDto);
-
         }
-
 
         return arr;
     }
