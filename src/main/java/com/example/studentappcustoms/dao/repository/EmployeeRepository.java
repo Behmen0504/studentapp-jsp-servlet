@@ -9,93 +9,45 @@ import com.example.studentappcustoms.model.dto.EmployeeDto;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
+
 public class EmployeeRepository {
-    public ArrayList<EmployeeDto> getAllEmployees(Connection c) throws Exception {
-        PreparedStatement statement = c.prepareStatement("select * from employees e join departments d on e.dep_id=d.id");
+    public List<EmployeeDto> getAllEmployees(Connection c) throws Exception {
+        PreparedStatement statement = c.prepareStatement("select e.*,d.id department_id,d.name department_name from employees e left join departments d on e.dep_id=d.id");
         ResultSet rs = statement.executeQuery();
-        ArrayList<EmployeeDto> arr = new ArrayList<>();
+        ArrayList<EmployeeEntity> employeeEntityList = new ArrayList<>();
         while (rs.next()) {
-
-            DepartmentEntity departmentEntity = new DepartmentEntity(rs.getInt(6),rs.getString(7));
-            EmployeeEntity entity = new EmployeeEntity(
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(4),
+            DepartmentEntity departmentEntity = new DepartmentEntity(rs.getInt("department_id"), rs.getString("department_name"));
+            EmployeeEntity employeeEntity = new EmployeeEntity(
+                    rs.getInt("id"),//column names
+                    rs.getString("name"),
+                    rs.getString("surname"),
+                    rs.getString("dob"),
                     departmentEntity);
-
-            EmployeeDto employeeDto = EmployeeMapper.mapEntityToDto(entity);
-            arr.add(employeeDto);
+            employeeEntityList.add(employeeEntity);
         }
-
-
-        return arr;
-    }
-    public ArrayList<EmployeeDto> getAllEmployees2(Connection c) throws Exception {
-        PreparedStatement statement = c.prepareStatement("select * from employees");
-        ResultSet rs = statement.executeQuery();
-
-        ArrayList<EmployeeDto> arr = new ArrayList<>();
-
-        DepartmentRepository departmentRepository = new DepartmentRepository();
-
-        while (rs.next()) {
-
-            DepartmentDto departmentDto =
-                    rs.getObject(5) != null ?
-                            departmentRepository.getDepartmentById((Integer) rs.getObject(5)
-                            ) : new DepartmentDto();
-
-
-            DepartmentEntity departmentEntity = new DepartmentEntity(departmentDto.getId(), departmentDto.getName());
-
-            EmployeeEntity entity = new EmployeeEntity(
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(4),
-                    departmentEntity);
-
-            EmployeeDto employeeDto = new EmployeeDto(
-                    entity.getId(),
-                    entity.getName(),
-                    entity.getSurname(),
-                    entity.getDob(),
-                    departmentDto);
-            arr.add(employeeDto);
-        }
-
-        return arr;
+        return EmployeeMapper.mapEntitiesToDtos(employeeEntityList);
     }
 
     public EmployeeDto getElmployeeById(Integer id) throws Exception {
-        EmployeeEntity entity = null;
+        EmployeeEntity employeeEntity = null;
         EmployeeDto employeeDto = null;
         Connection c = null;
         DepartmentRepository departmentRepository = new DepartmentRepository();
-
         c = DatabaseConnention.connectToDatabase();
         PreparedStatement statement = c.prepareStatement("select * from employees where id = " + id);
         ResultSet rs = statement.executeQuery();
-
-
         while (rs.next()) {
             DepartmentDto departmentDto = departmentRepository.getDepartmentById(
-                    rs.getObject(5) != null && !rs.wasNull() ? (Integer) rs.getObject(5) : null);
-            entity = new EmployeeEntity(
-                    rs.getInt(1),
-                    rs.getString(2),
-                    rs.getString(3),
-                    rs.getString(4),
-                    new DepartmentEntity(departmentDto.getId(), departmentDto.getName()));
-            employeeDto = new EmployeeDto(
-                    entity.getId(),
-                    entity.getName(),
-                    entity.getSurname(),
-                    entity.getDob(),
-                    departmentDto);
+                    rs.getObject("dep_id") != null && !rs.wasNull() ? (Integer) rs.getObject("dep_id") : null);
+            employeeEntity = new EmployeeEntity(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("surname"),
+                    rs.getString("dob"),
+                    departmentDto ==null ? new DepartmentEntity() : new DepartmentEntity(departmentDto.getId(), departmentDto.getName()));
+            employeeDto = EmployeeMapper.mapEntityToDto(employeeEntity);
         }
-
         return employeeDto;
     }
 
@@ -137,14 +89,11 @@ public class EmployeeRepository {
     }
 
     public void deleteEmployee(int id) throws Exception {
-        ResultSet rs = null;
         PreparedStatement statement = null;
         Connection c = null;
-
         c = DatabaseConnention.connectToDatabase();
         statement = c.prepareStatement(" delete from employees where id=?");
         statement.setInt(1, id);
         statement.execute();
-
     }
 }

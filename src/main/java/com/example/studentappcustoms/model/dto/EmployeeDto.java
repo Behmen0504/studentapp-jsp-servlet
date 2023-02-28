@@ -17,6 +17,8 @@ public class EmployeeDto {
         this.dob = dob;
         this.department = department;
     }
+    public EmployeeDto() {
+    }
 
     public int getId() {
         return id;

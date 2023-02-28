@@ -11,6 +11,7 @@ public class DepartmentEntity {
     public DepartmentEntity(String name) {
         this.name = name;
     }
+    public DepartmentEntity() { }
     public Integer getId() {
         return id;
     }

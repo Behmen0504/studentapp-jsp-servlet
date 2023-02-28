@@ -4,28 +4,25 @@ import com.example.studentappcustoms.dao.entity.DepartmentEntity;
 import com.example.studentappcustoms.dao.entity.EmployeeEntity;
 import com.example.studentappcustoms.model.dto.DepartmentDto;
 import com.example.studentappcustoms.model.dto.EmployeeDto;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeMapper {
 
-    public static EmployeeDto mapEntityToDto(EmployeeEntity entity) {
+    public static List<EmployeeDto> mapEntitiesToDtos(List<EmployeeEntity> employeeEntityList) {
+        List<EmployeeDto> employeeDtoList = employeeEntityList.stream().map(employee->mapEntityToDto(employee)).collect(Collectors.toList());
+        return employeeDtoList;
+    }
+
+    public static EmployeeDto mapEntityToDto(EmployeeEntity employeeEntity) {
         EmployeeDto employeeDto = new EmployeeDto(
-                entity.getId(),
-                entity.getName(),
-                entity.getSurname(),
-                entity.getDob(),
-                mapEntityToDepartmentDto(entity.getEntity())
+                employeeEntity.getId(),
+                employeeEntity.getName(),
+                employeeEntity.getSurname(),
+                employeeEntity.getDob(),
+                DepartmentMapper.mapEntityToDepartmentDto(employeeEntity.getEntity())
         );
         return employeeDto;
     }
 
-
-    public static DepartmentDto mapEntityToDepartmentDto(DepartmentEntity entity){
-        DepartmentDto departmentDto = new DepartmentDto();
-        if(entity!=null){
-            departmentDto.setId(entity.getId());
-            departmentDto.setName(entity.getName());
-        }
-        return departmentDto;
-
-    }
 }

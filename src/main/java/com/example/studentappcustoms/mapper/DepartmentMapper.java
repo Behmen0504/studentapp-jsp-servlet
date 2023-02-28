@@ -11,4 +11,13 @@ public class DepartmentMapper {
         );
         return null;
     }
+
+    public static DepartmentDto mapEntityToDepartmentDto(DepartmentEntity departmentEntity){
+        DepartmentDto departmentDto = new DepartmentDto();
+        if(departmentEntity!=null){
+            departmentDto.setId(departmentEntity.getId());
+            departmentDto.setName(departmentEntity.getName());
+        }
+        return departmentDto;
+    }
 }

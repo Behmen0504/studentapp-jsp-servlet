@@ -22,25 +22,24 @@
             <th></th>
         </tr>
         </thead>
-        <%ArrayList<EmployeeDto> list = (ArrayList<EmployeeDto>) request.getAttribute("employeeList");
-        %>
-        <c:forEach items="${employeeList}" var="el">
+        <c:forEach items="${employeeList[0]}" var="el">
         <tr>
             <td style="display: none;"> ${el.id} </td>
             <td> ${el.name} </td>
             <td> ${el.surname} </td>
             <td> ${el.dob} </td>
+            <%--<td> ${el.department != null ? el.department.name : null} </td>--%>
             <td> ${el.department != null ? el.department.name : null} </td>
             <td>
-                <a class="btn-crud" href="employee?edit=${el.id}">Edit</a>
+                <a class="btn-crud" href="employees?edit=${el.id}">Edit</a>
             </td>
             <td>
-                <a class="btn-crud" href="employee?delete=${el.id}">delete</a>
+                <a class="btn-crud" href="employees?delete=${el.id}">delete</a>
             </td>
             </c:forEach>
     </table>
     <br/>
-    <form action="employee" method="get">
+    <form action="employees" method="get">
         <input type="submit" class="btn" name="buttonadd" value="Add employee">
         <a href="index.jsp" style="text-decoration: none;" class="btn">Home</a>
     </form>

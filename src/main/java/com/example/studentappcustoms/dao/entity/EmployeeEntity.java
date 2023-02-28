@@ -1,13 +1,11 @@
 package com.example.studentappcustoms.dao.entity;
 
-import com.example.studentappcustoms.model.dto.DepartmentDto;
-
 public class EmployeeEntity {
     private int id;
     private String name;
     private String surname;
     private String dob;
-    private DepartmentEntity entity;
+    private DepartmentEntity entity;//
 
     public EmployeeEntity(int id, String name, String surname, String dob, DepartmentEntity entity) {
         this.id = id;

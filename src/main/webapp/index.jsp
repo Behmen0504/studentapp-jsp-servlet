@@ -9,11 +9,9 @@
 </head>
 <body>
 <div class="boxes">
-
     <div class="box"><a href="index.jsp">Home</a></div>
     <div class="box"><a href="employee.html">Employees</a></div>
     <div class="box"><a href="department.html">Departments</a></div>
 </div>
-
 </body>
 </html>

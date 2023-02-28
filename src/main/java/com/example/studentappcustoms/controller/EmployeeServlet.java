@@ -16,29 +16,29 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.List;
 
-@WebServlet(name = "EmployeeServlet", urlPatterns = "/employee")
+@WebServlet(name = "EmployeeServlet", urlPatterns = "/employees")
 public class EmployeeServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
         EmployeeRepository employeeRepository = new EmployeeRepository();
         DepartmentRepository departmentRepository = new DepartmentRepository();
-        ArrayList<DepartmentDto> department_list = null;
-        ArrayList<EmployeeDto> employee_list = null;
-        EmployeeDto e = null;
+        List<DepartmentDto> departmentList = null;
+        List<EmployeeDto> employeeList = null;
+        EmployeeDto employeeDto = new EmployeeDto();
         Connection c = null;
 
         if (request.getParameter("buttonadd") != null) {
             if (request.getParameter("buttonadd").equals("Add employee")) {
                 try {
                     c = DatabaseConnention.connectToDatabase();
-                    department_list = departmentRepository.getAllDepartments(c);
+                    departmentList = departmentRepository.getAllDepartments(c);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                 }
-                Util.sendDataAndForward(request, response, "departmentList", "addemployee.jsp", department_list);
+                Util.sendDataAndForward(request, response, "departmentList", "addemployee.jsp", departmentList);
             }
             return;
         }
@@ -47,82 +47,68 @@ public class EmployeeServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("edit"));
             try {
                 c = DatabaseConnention.connectToDatabase();
-                department_list = departmentRepository.getAllDepartments(c);
-                e = employeeRepository.getElmployeeById(id);
+                departmentList = departmentRepository.getAllDepartments(c);
+                employeeDto = employeeRepository.getElmployeeById(id);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
-            Util.sendDataAndForward2(request, response, "myData", "editemployee.jsp", e, department_list);
+            Util.sendDataAndForward(request, response, "myData", "editemployee.jsp", employeeDto, departmentList);
         }
         if (request.getParameter("delete") != null) {
             int id = Integer.parseInt(request.getParameter("delete"));
             try {
-                c = DatabaseConnention.connectToDatabase();
                 employeeRepository.deleteEmployee(id);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
-            response.sendRedirect("employee");
+            response.sendRedirect("employees");
             return;
         }
-
         try {
             c = DatabaseConnention.connectToDatabase();
-            employee_list = employeeRepository.getAllEmployees(c);
-
+            employeeList = employeeRepository.getAllEmployees(c);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
-        Util.sendDataAndForward(request, response, "employeeList", "employee-list.jsp", employee_list);
+        Util.sendDataAndForward(request, response, "employeeList", "employee-list.jsp", employeeList);
     }
-
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType("text/html");
         EmployeeRepository employeeRepository = new EmployeeRepository();
         DepartmentRepository departmentRepository = new DepartmentRepository();
-        ArrayList<DepartmentDto> department_list = null;
-        ArrayList<EmployeeDto> employee_list = null;
-        DepartmentDto department = null;
-        EmployeeDto e = null;
-        Connection c = null;
+        DepartmentDto departmentDto = null;
 
-        departmentRepository = new DepartmentRepository();
-        employeeRepository = new EmployeeRepository();
-        c = null;
         String id = request.getParameter("id");
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
         String dt = request.getParameter("dob");
         String dep_id = request.getParameter("depid");
         try{
-            department = departmentRepository.getDepartmentById(Integer.parseInt(dep_id));
+            departmentDto = departmentRepository.getDepartmentById(Integer.parseInt(dep_id));
             if (request.getParameter("btnedit") != null) {
-                EmployeeEntity entity = new EmployeeEntity(
+                EmployeeEntity employeeEntity = new EmployeeEntity(
                         Integer.parseInt(id), name, surname, dt,
-                        new DepartmentEntity(department.getId(),department.getName()));
+                        new DepartmentEntity(departmentDto.getId(),departmentDto.getName()));
                 if (request.getParameter("btnedit").equals("Edit employee")) {
                     try {
-                        employeeRepository.updateEmployee(entity);
+                        employeeRepository.updateEmployee(employeeEntity);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
-                    response.sendRedirect("employee");
+                    response.sendRedirect("employees");
                 }
                 return;
             }
         }catch (Exception ex){
             System.out.println(ex.getMessage());
         }
-
-
-        EmployeeEntity entity = new EmployeeEntity(name, surname, dt, new DepartmentEntity(department.getId(),department.getName()));
+        EmployeeEntity employeeEntity = new EmployeeEntity(name, surname, dt, new DepartmentEntity(departmentDto.getId(),departmentDto.getName()));
         try {
-            employeeRepository.addEmployee(entity);
-            response.sendRedirect("employee?buttonadd=Add+employee");
+            employeeRepository.addEmployee(employeeEntity);
+            response.sendRedirect("employees?buttonadd=Add+employee");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
-
 }

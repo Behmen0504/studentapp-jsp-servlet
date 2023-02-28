@@ -13,7 +13,7 @@ public class DepartmentRepository {
         ResultSet rs = statement.executeQuery();
         ArrayList<DepartmentDto> departmentDtoArrayList = new ArrayList<>();
         while (rs.next()) {
-            DepartmentEntity entity = new DepartmentEntity(rs.getInt(1), rs.getString(2));
+            DepartmentEntity entity = new DepartmentEntity(rs.getInt("id"), rs.getString("name"));
             DepartmentDto departmentDto = new DepartmentDto(entity.getId(), entity.getName());
             departmentDtoArrayList.add(departmentDto);
         }
@@ -51,9 +51,8 @@ public class DepartmentRepository {
             c = DatabaseConnention.connectToDatabase();
             PreparedStatement statement = c.prepareStatement("select * from departments where id = " + id);
             ResultSet rs = statement.executeQuery();
-
             while (rs.next()) {
-                entity = new DepartmentEntity(rs.getInt(1), rs.getString(2));
+                entity = new DepartmentEntity(rs.getInt("id"), rs.getString("name"));
                 dto = new DepartmentDto(entity.getId(), entity.getName());
             }
             return dto;
@@ -62,7 +61,6 @@ public class DepartmentRepository {
     }
 
     public void deleteDepartment(int id) throws Exception {
-        ResultSet rs = null;
         PreparedStatement statement = null;
         Connection c = null;
         c = DatabaseConnention.connectToDatabase();

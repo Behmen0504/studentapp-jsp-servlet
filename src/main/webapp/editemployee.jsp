@@ -12,7 +12,7 @@
 <body>
 <div class="panel">
     <h1>Edit employee</h1>
-    <form action="employee" method="post">
+    <form action="employees" method="post">
         <div>
             <input type="hidden" name="id" value="${myData[0].id}">
             <label>Name</label>
@@ -33,9 +33,6 @@
             %>
             <label>Department name</label>
             <select required name="depid" id="">
-<%--                                <c:forEach items="${myData[1]}" var="dl">--%>
-<%--                                    <option value="${dl.id}">${dl.name}</option>--%>
-<%--                                </c:forEach>--%>
                 <%for(DepartmentDto d: departmentL) {%>
                 <option <% if (Objects.equals(e.getDepartment() == null ? null:e.getDepartment().getId(),d.getId())) { %> selected <%} %> value="<%=d.getId()%>"><%=d.getName()%></option>
                 <%}%>

@@ -18,15 +18,15 @@
             <th></th>
         </tr>
         </thead>
-        <c:forEach items="${departmentList}" var="dl">
+        <c:forEach items="${departmentList[0]}" var="dl">
             <tr>
                 <td style="display: none;">${dl.id}</td>
                 <td> ${dl.name} </td>
                 <td>
-                    <a class="btn-crud" href="department?edit=${dl.id}">Edit</a>
+                    <a class="btn-crud" href="departments?edit=${dl.id}">Edit</a>
                 </td>
                 <td>
-                    <a class="btn-crud" href="department?delete=${dl.id}">Delete</a>
+                    <a class="btn-crud" href="departments?delete=${dl.id}">Delete</a>
                 </td>
             </tr>
         </c:forEach>

@@ -6,9 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Util {
     public static String alertMessage(int control) {
@@ -25,17 +22,7 @@ public class Util {
         }
         return alert;
     }
-
     public static void sendDataAndForward(HttpServletRequest request,
-                                          HttpServletResponse response,
-                                          String dataName,
-                                          String requestName,
-                                          Object data) throws ServletException, IOException {
-        request.setAttribute(dataName, data);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher(requestName);
-        requestDispatcher.forward(request, response);
-    }
-    public static void sendDataAndForward2(HttpServletRequest request,
                                            HttpServletResponse response,
                                            String dataName,
                                            String requestName, Object...data) throws ServletException, IOException {

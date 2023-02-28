@@ -8,11 +8,11 @@
 <body>
 <div class="panel">
     <h1>Edit employee</h1>
-    <form action="department" method="post">
+    <form action="departments" method="post">
         <div>
-            <input type="hidden" name="id" value="${dep.id}">
+            <input type="hidden" name="id" value="${dep[0].id}">
             <label>Name</label>
-            <input required type="text" name="name" value="${dep.name}">
+            <input required type="text" name="name" value="${dep[0].name}">
         </div>
         <br/>
         <input type="submit" class="btn" name="btnedit" value="Edit department">

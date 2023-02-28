@@ -9,7 +9,7 @@
 <body>
 <div class="panel">
     <h1>Add employee</h1>
-    <form action="employee" method="post">
+    <form action="employees" method="post">
         <div>
             <label>Name</label>
             <input required type="text" name="name">
@@ -24,14 +24,14 @@
             &nbsp;
             <label>Department name</label>
             <select required name="depid" id="">
-                <c:forEach items="${departmentList}" var="dl">
+                <c:forEach items="${departmentList[0]}" var="dl">
                         <option value="${dl.id}">${dl.name}</option>
                 </c:forEach>
             </select>
             <input type="submit" class="btn-submit" name="btnadd" value="Add employee">
         </div>
 
-        <a href="employee" style="text-decoration: none;" class="btn">Employee list</a>
+        <a href="employees" style="text-decoration: none;" class="btn">Employee list</a>
         <a href="index.jsp" style="text-decoration: none;" class="btn">Home</a>
     </form>
 </div>
